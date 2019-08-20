@@ -29,17 +29,6 @@ export default class BabelParserGenerator {
     return template.ast(code, this.options);
   }
 
-  forEach(
-    values: any[],
-    cb: (value: any, i: number, count: number) => number
-  ): number {
-    let count = 0;
-    values.forEach((value: any, i: number) => {
-      count = cb(value, i, count);
-    });
-    return count;
-  }
-
   generate(): string {
     return generate(this.ast, {}).code;
   }
