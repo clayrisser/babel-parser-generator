@@ -37,41 +37,52 @@ export default class BabelParserGenerator {
     code: string,
     injectPath: string | DeepArray<string> = '',
     codePath?: string | DeepArray<string>
-  ): void {
-    if (Array.isArray(injectPath)) {
-      injectPath = _.flattenDeep(injectPath)
-        .filter((s: string) => s.length)
-        .join('.');
-    }
-    let ast = this.ast.program.body;
-    if (injectPath.length) ast = _.get(this.ast.program.body, injectPath);
+  ): number {
     let templateAst = this.templateAst(code, codePath);
     if (!Array.isArray(templateAst)) templateAst = [templateAst];
-    if (injectPath.length) {
-      _.set(this.ast.program.body, injectPath, [...templateAst, ...ast]);
-    } else {
-      this.ast.program.body = [...templateAst, ...ast];
-    }
+    return (this.setAst(injectPath, [
+      ...templateAst,
+      ...(this.getAst(injectPath) as Statement[])
+    ]) as Statement[]).length;
   }
 
   append(
     code: string,
     injectPath: string | DeepArray<string> = '',
     codePath?: string | DeepArray<string>
-  ): void {
+  ): number {
+    let templateAst = this.templateAst(code, codePath);
+    if (!Array.isArray(templateAst)) templateAst = [templateAst];
+    return (this.setAst(injectPath, [
+      ...(this.getAst(injectPath) as Statement[]),
+      ...templateAst
+    ]) as Statement[]).length;
+  }
+
+  getAst(injectPath: string | DeepArray<string> = ''): Statement | Statement[] {
     if (Array.isArray(injectPath)) {
       injectPath = _.flattenDeep(injectPath)
         .filter((s: string) => s.length)
         .join('.');
     }
-    let ast = this.ast.program.body;
-    if (injectPath.length) ast = _.get(this.ast.program.body, injectPath);
-    let templateAst = this.templateAst(code, codePath);
-    if (!Array.isArray(templateAst)) templateAst = [templateAst];
-    if (injectPath.length) {
-      _.set(this.ast.program.body, injectPath, [...ast, ...templateAst]);
-    } else {
-      this.ast.program.body = [...ast, ...templateAst];
+    if (injectPath.length) return _.get(this.ast.program.body, injectPath);
+    return this.ast.program.body;
+  }
+
+  setAst(
+    injectPath: string | DeepArray<string> = '',
+    value: Statement | Statement[]
+  ): Statement | Statement[] {
+    if (Array.isArray(injectPath)) {
+      injectPath = _.flattenDeep(injectPath)
+        .filter((s: string) => s.length)
+        .join('.');
     }
+    if (injectPath.length) {
+      _.set(this.ast.program.body, injectPath, value);
+    } else {
+      this.ast.program.body = value as Statement[];
+    }
+    return this.getAst(injectPath);
   }
 }
