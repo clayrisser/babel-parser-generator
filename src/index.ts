@@ -10,8 +10,64 @@ export default class BabelParserGenerator {
 
   options: ParserOptions = {};
 
+  reservedKeywords = new Set([
+    'break',
+    'case',
+    'catch',
+    'class',
+    'const',
+    'continue',
+    'debugger',
+    'default',
+    'delete',
+    'do',
+    'else',
+    'enum',
+    'export',
+    'extends',
+    'false',
+    'finally',
+    'for',
+    'function',
+    'if',
+    'implements',
+    'import',
+    'in',
+    'instanceof',
+    'interface',
+    'let',
+    'new',
+    'package',
+    'private',
+    'protected',
+    'public',
+    'return',
+    'static',
+    'super',
+    'switch',
+    'this',
+    'throw',
+    'true',
+    'try',
+    'typeof',
+    'var',
+    'void',
+    'while',
+    'with',
+    'yield'
+  ]);
+
   constructor(code = '') {
     this.ast = parse(code, this.options);
+  }
+
+  isReservedKeyword(keyword: string) {
+    return this.reservedKeywords.has(keyword);
+  }
+
+  safeWord(keyword: string) {
+    if (!this.isReservedKeyword(keyword)) return keyword;
+    return `_${keyword}`;
   }
 
   templateAst(
