@@ -3,7 +3,9 @@ import generate from '@babel/generator';
 import template from '@babel/template';
 import { File, Statement } from '@babel/types';
 import { parse, ParserOptions } from '@babel/parser';
-import { DeepArray } from './types';
+import { DeepArray, InjectPath } from './types';
+
+export * from './types';
 
 export default class BabelParserGenerator {
   ast: File;
@@ -91,7 +93,7 @@ export default class BabelParserGenerator {
 
   prepend(
     code: string,
-    injectPath: string | DeepArray<string> = '',
+    injectPath: InjectPath = '',
     codePath?: string | DeepArray<string>
   ): number {
     let templateAst = this.templateAst(code, codePath);
@@ -104,7 +106,7 @@ export default class BabelParserGenerator {
 
   append(
     code: string,
-    injectPath: string | DeepArray<string> = '',
+    injectPath: InjectPath = '',
     codePath?: string | DeepArray<string>
   ): number {
     let templateAst = this.templateAst(code, codePath);
@@ -115,26 +117,27 @@ export default class BabelParserGenerator {
     ]) as Statement[]).length;
   }
 
-  getAst(injectPath: string | DeepArray<string> = ''): Statement | Statement[] {
+  getAst(injectPath: InjectPath = ''): Statement | Statement[] {
     if (Array.isArray(injectPath)) {
       injectPath = _.flattenDeep(injectPath)
-        .filter((s: string) => s.length)
+        .filter((s: string | number) => s.toString().length)
         .join('.');
     }
-    if (injectPath.length) return _.get(this.ast.program.body, injectPath);
+    if (injectPath.toString().length)
+      return _.get(this.ast.program.body, injectPath);
     return this.ast.program.body;
   }
 
   setAst(
-    injectPath: string | DeepArray<string> = '',
+    injectPath: InjectPath = '',
     value: Statement | Statement[]
   ): Statement | Statement[] {
     if (Array.isArray(injectPath)) {
       injectPath = _.flattenDeep(injectPath)
-        .filter((s: string) => s.length)
+        .filter((s: number | string) => s.toString().length)
         .join('.');
     }
-    if (injectPath.length) {
+    if (injectPath.toString().length) {
       _.set(this.ast.program.body, injectPath, value);
     } else {
       this.ast.program.body = value as Statement[];
