@@ -75,17 +75,23 @@ export default class BabelParserGenerator {
   templateAst(
     code: string,
     codePath?: string | DeepArray<string>,
-    substitutions: Substitutions = {}
+    substitutions?: Substitutions
   ): Statement | Statement[] {
     if (Array.isArray(codePath)) {
       codePath = _.flattenDeep(codePath)
         .filter((s: string) => s.length)
         .join('.');
     }
-    if (codePath) {
-      return _.get(template(code, this.options)(substitutions), codePath);
+    let ast: Statement | Statement[];
+    if (substitutions) {
+      ast = template(code, this.options)(substitutions);
+    } else {
+      ast = template.ast(code, this.options);
     }
-    return template(code, this.options)(substitutions);
+    if (codePath) {
+      return _.get(ast, codePath);
+    }
+    return ast;
   }
 
   generate(): string {
