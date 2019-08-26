@@ -100,9 +100,11 @@ export default class BabelParserGenerator {
   prepend(
     code: string,
     injectPath: InjectPath = '',
-    codePath?: string | DeepArray<string>
+    codePath?: string | DeepArray<string>,
+    options: ParserOptions = {},
+    substitutions?: Substitutions
   ): number {
-    let templateAst = this.templateAst(code, codePath);
+    let templateAst = this.templateAst(code, codePath, options, substitutions);
     if (!Array.isArray(templateAst)) templateAst = [templateAst];
     return (this.setAst(injectPath, [
       ...templateAst,
@@ -113,9 +115,11 @@ export default class BabelParserGenerator {
   append(
     code: string,
     injectPath: InjectPath = '',
-    codePath?: string | DeepArray<string>
+    codePath?: string | DeepArray<string>,
+    options: ParserOptions = {},
+    substitutions?: Substitutions
   ): number {
-    let templateAst = this.templateAst(code, codePath);
+    let templateAst = this.templateAst(code, codePath, options, substitutions);
     if (!Array.isArray(templateAst)) templateAst = [templateAst];
     return (this.setAst(injectPath, [
       ...(this.getAst(injectPath) as Statement[]),
