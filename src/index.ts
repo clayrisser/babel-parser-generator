@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import generate from '@babel/generator';
+import generate, { GeneratorOptions } from '@babel/generator';
 import template from '@babel/template';
 import { File, Statement } from '@babel/types';
 import { parse, ParserOptions } from '@babel/parser';
@@ -75,6 +75,7 @@ export default class BabelParserGenerator {
   templateAst(
     code: string,
     codePath?: string | DeepArray<string>,
+    options: ParserOptions = {},
     substitutions?: Substitutions
   ): Statement | Statement[] {
     if (Array.isArray(codePath)) {
@@ -84,16 +85,16 @@ export default class BabelParserGenerator {
     }
     let ast: Statement | Statement[];
     if (substitutions) {
-      ast = template(code, this.options)(substitutions);
+      ast = template(code, { ...this.options, ...options })(substitutions);
     } else {
-      ast = template.ast(code, this.options);
+      ast = template.ast(code, { ...this.options, ...options });
     }
     if (codePath) return _.get(ast, codePath);
     return ast;
   }
 
-  generate(): string {
-    return generate(this.ast, {}).code;
+  generate(options: GeneratorOptions = {}): string {
+    return generate(this.ast, options).code;
   }
 
   prepend(
