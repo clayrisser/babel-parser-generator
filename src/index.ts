@@ -3,7 +3,7 @@ import generate from '@babel/generator';
 import template from '@babel/template';
 import { File, Statement } from '@babel/types';
 import { parse, ParserOptions } from '@babel/parser';
-import { DeepArray, InjectPath } from './types';
+import { DeepArray, InjectPath, Substitutions } from './types';
 
 export * from './types';
 
@@ -74,7 +74,8 @@ export default class BabelParserGenerator {
 
   templateAst(
     code: string,
-    codePath?: string | DeepArray<string>
+    codePath?: string | DeepArray<string>,
+    substitutions: Substitutions = {}
   ): Statement | Statement[] {
     if (Array.isArray(codePath)) {
       codePath = _.flattenDeep(codePath)
@@ -82,9 +83,9 @@ export default class BabelParserGenerator {
         .join('.');
     }
     if (codePath) {
-      return _.get(template.ast(code, this.options), codePath);
+      return _.get(template(code, this.options)(substitutions), codePath);
     }
-    return template.ast(code, this.options);
+    return template(code, this.options)(substitutions);
   }
 
   generate(): string {
