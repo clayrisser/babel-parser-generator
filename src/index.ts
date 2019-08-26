@@ -88,9 +88,7 @@ export default class BabelParserGenerator {
     } else {
       ast = template.ast(code, this.options);
     }
-    if (codePath) {
-      return _.get(ast, codePath);
-    }
+    if (codePath) return _.get(ast, codePath);
     return ast;
   }
 
