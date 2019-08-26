@@ -1,6 +1,6 @@
 {
   "name": "babel-parser-generator",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "an easy api to parse and generate code",
   "keywords": [
     "babel-parser-generator",
