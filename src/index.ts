@@ -83,12 +83,12 @@ export default class BabelParserGenerator {
         .filter((s: string) => s.length)
         .join('.');
     }
-    let ast: Statement | Statement[];
-    if (substitutions) {
-      ast = template(code, { ...this.options, ...options })(substitutions);
-    } else {
-      ast = template.ast(code, { ...this.options, ...options });
-    }
+    const ast: Statement | Statement[] = template(code, {
+      preserveComments: true,
+      ...this.options,
+      placeholderPattern: false,
+      ...options
+    })(substitutions);
     if (codePath) return _.get(ast, codePath);
     return ast;
   }
