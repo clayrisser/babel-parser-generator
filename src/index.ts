@@ -14,6 +14,7 @@ export default class BabelParserGenerator {
 
   reservedKeywords = new Set([
     'break',
+    'boolean',
     'case',
     'catch',
     'class',
@@ -39,6 +40,7 @@ export default class BabelParserGenerator {
     'interface',
     'let',
     'new',
+    'number',
     'package',
     'private',
     'protected',
@@ -47,6 +49,7 @@ export default class BabelParserGenerator {
     'static',
     'super',
     'switch',
+    'string',
     'this',
     'throw',
     'true',
