@@ -3,6 +3,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/codejamninja/babel-parser-generator.svg?style=social&label=Stars)](https://github.com/codejamninja/babel-parser-generator)
 
 > an easy api to parse and generate code
+![](assets/babel-parser-generator.png)
 
 Please ★ this repo if you found it useful ★ ★ ★
 
